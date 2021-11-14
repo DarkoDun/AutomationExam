@@ -10,9 +10,6 @@ import java.util.List;
 
 public class SearchPage extends BasePage{
 
-    @FindBy(className = "heading-counter")
-    WebElement searchResultQuantity;        // Ovde mi je bio cilj da napravim IF loop - Ako search result ima vise od 1 rezultata da udje u List metodu listSearchedItems
-
     @FindBy(css = "#center_column > ul > li h5 > a")
     List<WebElement> searchedListResult;
 
@@ -33,5 +30,23 @@ public class SearchPage extends BasePage{
     public boolean assertExpectedSearchResult(String searchResult) {
         Assert.assertEquals(Arrays.toString(listSearchedItems()), searchResult, "Search result doesn't equal!");
         return true;
+    }
+
+    public void searchChiffonDress(){
+        String chiffonDress = "Printed Chiffon Dress";
+
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login();
+        HomePage homePage = new HomePage(driver);
+        homePage.enterTextToSearchFiledAndSearchIt(chiffonDress);
+    }
+
+    public void searchPrintedDress(){
+        String printedDress = "Printed Dress";
+
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login();
+        HomePage homePage = new HomePage(driver);
+        homePage.enterTextToSearchFiledAndSearchIt(printedDress);
     }
 }

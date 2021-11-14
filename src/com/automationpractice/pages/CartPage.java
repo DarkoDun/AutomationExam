@@ -36,7 +36,6 @@ public class CartPage extends BasePage{
     @FindBy(css = "#cart_navigation > button")
     WebElement clickButtonIConfirmMyOrderInOrderSummary;
 
-    String[] expectedAddedItemsFromSummerDresses = {"Printed Summer Dress","Printed Summer Dress","Printed Chiffon Dress"};
     String[] expectedAddedItemsSKUFromSummerDresses = {"SKU : demo_5","SKU : demo_6","SKU : demo_7"};
     String[] expectedAddedItemSKUForBlouse = {"SKU : demo_2"};
     String expectedTitleOrderConfirmation = "Order confirmation - My Store";

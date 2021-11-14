@@ -6,52 +6,30 @@ import org.testng.annotations.Test;
 public class ProductsManipulationTest extends BaseTest{
 
     @Test
-    public void addToCartAllItemsFromSummerDressPage(){
+    public void addToCartAllItemsFromSummerDressPage(){  // Add and validate items in cart.
         String expectedSum = "3 Products";
 
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login();
-        HomePage homePage = new HomePage(driver);
-        homePage.clickOnSummerDressFromDressSubMenu();
-        homePage.assertIfCartEmpty();
         SummerDressPage summerDressPage = new SummerDressPage(driver);
-        summerDressPage.addAllThreeSummerDressItemsDressesToCart();
-        homePage.clickCartPageButton();
+        summerDressPage.addingToCartAllThreeItemsFromSummerDressSubMenu();
         CartPage cartPage = new CartPage(driver);
         cartPage.assertSumOfProductsInCart(expectedSum);
         cartPage.assertActualAndExpectedItemsSKUForSummerDress();
     }
 
     @Test
-    public void addItemToWishlist() throws InterruptedException {
+    public void addBlouseToWishlist() throws InterruptedException { // Add Blouse to Wish list and validate it.
 
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login();
-        HomePage homePage = new HomePage(driver);
-        homePage.goToHomePageURL();
-        homePage.assertIfCartEmpty();
-        homePage.movePointerToBlouseItemAndAddToWishlist();
         WishlistPage wishlistPage = new WishlistPage(driver);
-        wishlistPage.goToWishlistURL();
-        wishlistPage.clickOnViewButton();
+        wishlistPage.addBlouseToWishListAndGoToWishlist();
         wishlistPage.waitAndAssertTitles();
     }
 
     @Test
-    public void buyBlouse10pcsWhiteColorSizeL() throws InterruptedException {
-        String expectedSum = "10 Products";
+    public void buyBlouse10pcsWhiteColorSizeL() throws InterruptedException {  // At the Home page select more options on item Blouse and choose 10pcs, white color, size L and validate buy.
 
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login();
         HomePage homePage = new HomePage(driver);
-        homePage.goToHomePageURL();
-        homePage.movePointerToBlouseAdd10pcsSizeLWhiteColorAndProccedToCheckhout();
+        homePage.addingBlouseToCart10pcsWhiteLAndGoThroughAllPagesAndConfirmOrder();
         CartPage cartPage = new CartPage(driver);
-        cartPage.listActualInventoryItems();
-        cartPage.assertActualAndExpectedItemsSKUForBlouseShopp();
-        cartPage.assertSumOfProductsInCart(expectedSum);
-        cartPage.assertBluseDescriptionWhiteL();
-        cartPage.goThroughAllTheStepsAndConfirmOrderForBlouseWhiteL();
         cartPage.assertTitleOrderConfirmation();
     }
 }

@@ -1,13 +1,11 @@
 package com.automationpractice.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.testng.Assert;
 
 public class LoginPage extends BasePage{
 
@@ -32,8 +30,13 @@ public class LoginPage extends BasePage{
     @FindBy(id = "create_account_error")
     WebElement createAccErrorEmailMessage;
 
-    String trueEmail = "proba2@test.com";
-    String truePass = "passwordProba";
+    String trueEmail = "mailforexam@test.com";
+    String truePass = "passwordExam";
+    String wrongemail = "proba1@proba.com";
+    String wrongpassword = "password";
+    String expectedWelcomeMessage = "Welcome to your account. Here you can manage all of your personal information and orders.";
+    String expectedAuthFailedMessage = "Authentication failed.";
+    String expectedUsedEmailErrorMessage = "An account using this email address has already been registered. Please enter a valid password or request a new one.";
 
     public LoginPage(ChromeDriver driver) {
         super(driver);
@@ -59,13 +62,21 @@ public class LoginPage extends BasePage{
 
     public HomePage login(){
         HomePage homePage = new HomePage(driver);
-        homePage.clickOnSigninRedirect();
-        WebDriverWait waitForEmail = new WebDriverWait(driver,200);
-        waitForEmail.until(ExpectedConditions.visibilityOf(loginEmail));
+        homePage.clickOnSigninRedirectButton();
+        waitFor().until(ExpectedConditions.visibilityOf(loginEmail));
         loginEmail.sendKeys(trueEmail);
         loginPassword.sendKeys(truePass);
         submitLogin.click();
         return new HomePage(driver);
+    }
+
+    public LoginPage tryWrongLoginData(){
+        HomePage homePage = new HomePage(driver);
+        homePage.clickOnSigninRedirectButton();
+        loginEnterEmail(wrongemail);
+        loginEnterPassword(wrongpassword);
+        clickSubmitUnSuccLogin();
+        return new LoginPage(driver);
     }
 
     public void clickSubmitUnSuccLogin(){
@@ -73,13 +84,29 @@ public class LoginPage extends BasePage{
     }
 
     public void createAccEmail(String newAccEmail){
+        waitFor().until(ExpectedConditions.visibilityOf(emailCreateField));
         emailCreateField.sendKeys(newAccEmail);
     }
 
     public String newAccUsedEmailError(){
-        WebDriverWait wait = new WebDriverWait(driver,1000);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("create_account_error")));
+        waitFor().until(ExpectedConditions.visibilityOf(createAccErrorEmailMessage));
 
         return createAccErrorEmailMessage.getText();
+    }
+
+    public boolean assertUsedEmailRegister(){
+        Assert.assertEquals(newAccUsedEmailError(),expectedUsedEmailErrorMessage, "There is no error message with used email test!");
+        return true;
+    }
+
+    public boolean assertSuccessfullLoginMessage(){
+        MyAccountPage myAccPage = new MyAccountPage(driver);
+        Assert.assertEquals(myAccPage.welcomeMessage(),expectedWelcomeMessage, "Expected Welcome message doesn't exist!");
+        return true;
+    }
+
+    public boolean assertWrongLoginDataMessage(){
+        Assert.assertEquals(signinAuthError(),expectedAuthFailedMessage, "Something goes wrong with invalid email and password login!");
+        return true;
     }
 }

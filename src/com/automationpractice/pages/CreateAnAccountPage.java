@@ -1,19 +1,16 @@
 package com.automationpractice.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 public class CreateAnAccountPage extends BasePage{
 
     @FindBy(id = "uniform-id_gender1") WebElement chooseMaleGender;
     @FindBy(id = "customer_firstname") WebElement nameField;
     @FindBy(id = "customer_lastname") WebElement lastnameField;
-    @FindBy(id = "email") WebElement emailField;
     @FindBy(id = "passwd") WebElement passwordField;
     @FindBy(id = "days") WebElement selectDayOfBirth;
     @FindBy(id = "months") WebElement selectMonthOfBirth;
@@ -25,17 +22,27 @@ public class CreateAnAccountPage extends BasePage{
     @FindBy(id = "phone_mobile") WebElement mobileNumberField;
     @FindBy(id = "submitAccount") WebElement clickOnSubmitAccRegistration;
 
+    String newAccEmail = "mailforexam122@test.com";
+    String name = "Exam";
+    String lastname = "Examist";
+    String password = "passwordExam";
+    String enterDayValue = "15";
+    String enterMonthValue = "11";
+    String enterYearValue = "1921";
+    String adress = "Test Adresa 14a";
+    String city = "Test grad ";
+    String postcode = "11000";
+    String mobilePhoneNumber = "0603300";
+    String selectStateText = "Florida";
+    String expectedWelcomeMessage = "Welcome to your account. Here you can manage all of your personal information and orders.";
+
     public CreateAnAccountPage(ChromeDriver driver) {
         super(driver);
     }
 
-    public void selectGender(){
+    public void waitAndChooseGender(){
+        waitFor().until(ExpectedConditions.visibilityOf(chooseMaleGender));
         chooseMaleGender.click();
-    }
-
-    public void waitForGender(){
-        WebDriverWait waitGender = new WebDriverWait(driver,200);
-        waitGender.until(ExpectedConditions.visibilityOfElementLocated(By.id("uniform-id_gender1")));
     }
 
     public void enterName(String name){
@@ -44,10 +51,6 @@ public class CreateAnAccountPage extends BasePage{
 
     public void enterLastname(String lastname){
         lastnameField.sendKeys(lastname);
-    }
-
-    public void enterEmail(String email){
-        emailField.sendKeys(email);
     }
 
     public void enterPassword(String password){
@@ -74,23 +77,47 @@ public class CreateAnAccountPage extends BasePage{
         clickOnSubmitAccRegistration.click();
     }
 
-    public void selectDay(String enterDayValue) {
-        Select dayOfBirth = new Select(selectDayOfBirth);
-        dayOfBirth.selectByValue(enterDayValue);
+    public void selectDay(String enterDayValue){
+        selectIt(selectDayOfBirth).selectByValue(enterDayValue);
     }
 
     public void selectMonth(String enterMonthValue){
-        Select monthOfBirth = new Select(selectMonthOfBirth);
-        monthOfBirth.selectByValue(enterMonthValue);
+        selectIt(selectMonthOfBirth).selectByValue(enterMonthValue);
     }
 
     public void selectYear(String enterYearValue){
-        Select yearOfBirth = new Select(selectYearOfBirth);
-        yearOfBirth.selectByValue(enterYearValue);
+        selectIt(selectYearOfBirth).selectByValue(enterYearValue);
     }
 
     public void selectStateText(String selectStateText){
-        Select statedropdown = new Select(selectState);
-        statedropdown.selectByVisibleText(selectStateText);
+        selectIt(selectState).selectByVisibleText(selectStateText);
+    }
+
+    public boolean assertWelcomeMessage(){
+        MyAccountPage mcAccPage = new MyAccountPage(driver);
+        Assert.assertEquals(mcAccPage.welcomeMessage(), expectedWelcomeMessage, "Welcome message doesn't exist!");
+        return true;
+    }
+
+    public MyAccountPage creatingAccWithAllFilledFields(){
+        HomePage homePage = new HomePage(driver);
+        homePage.clickOnSigninRedirectButton();
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.createAccEmail(newAccEmail);
+        loginPage.clickOnSubmitCreateNewAcc();
+        waitAndChooseGender();
+        enterName(name);
+        enterLastname(lastname);
+        enterPassword(password);
+        selectDay(enterDayValue);
+        selectMonth(enterMonthValue);
+        selectYear(enterYearValue);
+        enterAdress(adress);
+        enterCity(city);
+        selectStateText(selectStateText);
+        enterPostcode(postcode);
+        enterMobilePhoneNumber(mobilePhoneNumber);
+        clickRegister();
+        return new MyAccountPage(driver);
     }
 }

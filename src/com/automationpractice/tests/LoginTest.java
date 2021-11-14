@@ -2,33 +2,34 @@ package com.automationpractice.tests;
 
 import com.automationpractice.pages.HomePage;
 import com.automationpractice.pages.LoginPage;
-import com.automationpractice.pages.MyAccountPage;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class LoginTest extends BaseTest {
 
-    String wrongemail = "proba1@proba.com";
-    String wrongpassword = "password";
-    String welcomeMessage = "Welcome to your account. Here you can manage all of your personal information and orders.";
-    String authFailedMessage = "Authentication failed.";
+    String oldAccEmail = "mailforexam@test.com";
 
     @Test
     public void successfulLogin(){
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login();
-        MyAccountPage myAccountPage = new MyAccountPage(driver);
-        Assert.assertEquals(myAccountPage.welcomeMessage(),welcomeMessage);
+        loginPage.assertSuccessfullLoginMessage();
     }
 
     @Test
-    public void wrongLoginPassword(){                       // NAPRAVI METODU
+    public void tryToLoginWithWrongData(){     // Validate error login with non-existent email and pass without special characters.
         LoginPage loginPage = new LoginPage(driver);
+        loginPage.tryWrongLoginData();
+        loginPage.assertWrongLoginDataMessage();
+    }
+
+    @Test
+    public void tryToRegisterWithUsedEmail(){  // Validate is error displayed when trying to register with used email.
+
         HomePage homePage = new HomePage(driver);
-        homePage.clickOnSigninRedirect();
-        loginPage.loginEnterEmail(wrongemail);
-        loginPage.loginEnterPassword(wrongpassword);
-        loginPage.clickSubmitUnSuccLogin();
-        Assert.assertEquals(loginPage.signinAuthError(),authFailedMessage, "Something goes wrong with invalid email and password login!");
+        homePage.clickOnSigninRedirectButton();
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.createAccEmail(oldAccEmail);
+        loginPage.clickOnSubmitCreateNewAcc();
+        loginPage.assertUsedEmailRegister();
     }
 }

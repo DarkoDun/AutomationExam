@@ -1,22 +1,18 @@
 package com.automationpractice.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 public class WishlistPage extends BasePage{
 
-    @FindBy(xpath = "//*[@id=\"wishlist_40970\"]/td[5]/a")
+    @FindBy(css = "#wishlist_41201 > td:nth-child(5) > a")
     WebElement viewButton;
 
     @FindBy(id = "s_title")
     WebElement productTitle;
-
-    WebDriverWait wait = new WebDriverWait(driver,2000);
 
     public WishlistPage(ChromeDriver driver) {
         super(driver);
@@ -31,11 +27,21 @@ public class WishlistPage extends BasePage{
         viewButton.click();
     }
 
-    public Assert waitAndAssertTitles(){
+    public void waitAndAssertTitles(){
         String expectedBlouseText  = "Blouse\n" +
                 "S, Black";
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("s_title")));
+        waitFor().until(ExpectedConditions.visibilityOf(productTitle));
         Assert.assertEquals(productTitle.getText(), expectedBlouseText, "Title doesn't exist!");
-        return null;
+    }
+
+    public void addBlouseToWishListAndGoToWishlist() throws InterruptedException {
+
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login();
+        HomePage homePage = new HomePage(driver);
+        homePage.goToHomePageURL();
+        homePage.movePointerToBlouseItemAndAddToWishlist();
+        goToWishlistURL();
+        clickOnViewButton();
     }
 }
