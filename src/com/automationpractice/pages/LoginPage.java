@@ -34,6 +34,7 @@ public class LoginPage extends BasePage{
     String truePass = "passwordExam";
     String wrongemail = "proba1@proba.com";
     String wrongpassword = "password";
+    String oldAccEmail = "mailforexam@test.com";
     String expectedWelcomeMessage = "Welcome to your account. Here you can manage all of your personal information and orders.";
     String expectedAuthFailedMessage = "Authentication failed.";
     String expectedUsedEmailErrorMessage = "An account using this email address has already been registered. Please enter a valid password or request a new one.";
@@ -76,6 +77,14 @@ public class LoginPage extends BasePage{
         loginEnterEmail(wrongemail);
         loginEnterPassword(wrongpassword);
         clickSubmitUnSuccLogin();
+        return new LoginPage(driver);
+    }
+
+    public LoginPage tryRegisterWithUsedEmail(){
+        HomePage homePage = new HomePage(driver);
+        homePage.clickOnSigninRedirectButton();
+        createAccEmail(oldAccEmail);
+        clickOnSubmitCreateNewAcc();
         return new LoginPage(driver);
     }
 
